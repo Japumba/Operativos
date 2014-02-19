@@ -1,0 +1,4 @@
+Fabian:password
+dos:abc
+admin: usuario
+usuario:admin
