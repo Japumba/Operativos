@@ -2,3 +2,5 @@ Fabian:password
 dos:abc
 admin: usuario
 usuario:admin
+javier:javier
+carlitos:carlitos
