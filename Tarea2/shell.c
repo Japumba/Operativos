@@ -191,7 +191,7 @@ void executeCommand(COMMAND *cmd)
 
 void execExit()
 {
-	
+	exit(0);
 }
 
 void execShutdown()
