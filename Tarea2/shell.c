@@ -9,6 +9,7 @@ current directory.
 #include <string.h>
 #include <stdlib.h>
 #include <sys/wait.h>
+#include <unistd.h>
 
 #define COMMANDSIZE	256
 #define DEBUG		1
@@ -71,13 +72,17 @@ COMMAND *parseInput(char *input)
 	
 	char *token = NULL;
 	char **argv = (char **) calloc(15, sizeof(char*));
-	argv[0] = strtok(input, " ");
-	int args = 1;
+	token = strtok(input, " ");
+	int args = 0;
 
-	while(token = strtok(NULL, " ") != NULL && args < 15)
+	while(token != NULL)
 	{
+		#if DEBUG
+		printf("!!!Token = %s", token);
+		#endif
 		argv[args] = token;
 		args++;
+		token = strtok(NULL, " ");
 	}
 		
 	COMMAND *cmd = NULL;
