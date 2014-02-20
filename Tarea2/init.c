@@ -14,7 +14,7 @@ int main()
 		pid = fork(); 
 		if(pid ==0) 
 		{ 
-		execlp("xterm","xterm","-e","./getty",0); 
+		execlp("xterm","xterm","-e",getppid(),"./getty",0); 
 		} 
 	}
 	while(1) 

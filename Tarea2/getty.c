@@ -4,8 +4,8 @@ el archivo shadow.txt
 */
 #include <stdio.h>
 #include <string.h>
-
-int main(void)
+#include <stdlib.h>
+int main(int argc, char* argv[])
 {
 char nombre[15], pass[15];
 char linea[35], *tmp;
@@ -13,6 +13,9 @@ char nombreT[15],passT[15];
 int validUser = 0;
 int pid; 
 int status;
+
+int initID = argv[1];
+
 //leer el archivo shadow
 FILE *fp = fopen("shadow.txt","r");
 	//validación	
@@ -59,7 +62,7 @@ if (validUser == 1)
 		if(pid ==0) 
 		{ 
 		printf("abriendo shell");
-		execlp("./shell","./shell",0); 
+		execlp("./shell","./shell", itoa(initID),0); 
 		} 
 
 	while(1) 
