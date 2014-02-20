@@ -34,8 +34,16 @@ void execShutdown();
 void execGeneric(COMMAND *cmd);
 void destroyCommand(COMMAND *cmd);
 
+int initID;
+
 int main(int argc, char *argv[])
 {
+
+	if(argc < 2)
+		return 1;
+	
+	initID = atoi(argv[1]);
+	
 	char input[COMMANDSIZE];
 	COMMAND *command = NULL;
 	int args = 0;
@@ -196,7 +204,7 @@ void execExit()
 
 void execShutdown()
 {
-	
+	kill(initID, 9);
 }
 
 void execGeneric(COMMAND *cmd)
