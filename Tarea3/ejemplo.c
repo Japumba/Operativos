@@ -6,7 +6,7 @@
 #define DIF 16
 
 // NOMBRE DEL ARCHIVO A PROCESAR
-char filename[]="./imagen.bmp";
+char filename[]="imagen.bmp";
 
 #pragma pack(2) // Empaquetado de 2 bytes
 typedef struct {
@@ -88,7 +88,7 @@ int saveBMP(char *filename, IMAGE *image)
 {
 	FILE *fout;
 	int i,totpixs;
-
+	printf("Saving file: %s\n", filename);
 	fout=fopen(filename,"wb");
 	if (fout == NULL)
 		return(-1); // Error
