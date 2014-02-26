@@ -2,11 +2,15 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <pthread.h>
 
+
+#define NTHREADS	8
 #define DIF 16
 
 // NOMBRE DEL ARCHIVO A PROCESAR
 char filename[]="imagen.bmp";
+int *threadID;
 
 #pragma pack(2) // Empaquetado de 2 bytes
 typedef struct {
@@ -116,25 +120,26 @@ unsigned char blackandwhite(PIXEL p)
 	0.59*((float)p.green)+0.11*((float)p.blue)));
 }
 
-void processBMP(IMAGE *imagefte, IMAGE *imagedst)
+void *processBMP(void *arg)
 {
+	printf("Comenzando el thread %i\n", *(int *)arg);
 	int i,j;
 	int count=0;
 	PIXEL *pfte,*pdst;
 	PIXEL *v0,*v1,*v2,*v3,*v4,*v5,*v6,*v7;
 	int imageRows,imageCols;
+	int numThread = *(int *)arg;
 	
-	memcpy(imagedst,imagefte,sizeof(IMAGE)-sizeof(PIXEL *));
+	imageRows = (&imagenfte)->infoheader.rows;
+	imageCols = (&imagenfte)->infoheader.cols;
+
 	
-	imageRows = imagefte->infoheader.rows;
-	imageCols = imagefte->infoheader.cols;
-
-	imagedst->pixel=(PIXEL *)malloc(sizeof(PIXEL)*imageRows*imageCols);
-
-	for(i=1;i<imageRows-1;i++)
+	for(i=1+numThread;i<imageRows-1;i+=NTHREADS)
 		for(j=1;j<imageCols-1;j++)
 		{
-		pfte=imagefte->pixel+imageCols*i+j;
+		//printf("Thread %i trabajando\n",numThread);
+		pfte=(&imagenfte)->pixel+imageCols*i+j;
+		//printf("Punto fuente asignado\n");
 		v0=pfte-imageCols-1;
 		v1=pfte-imageCols;
 		v2=pfte-imageCols+1;
@@ -143,9 +148,10 @@ void processBMP(IMAGE *imagefte, IMAGE *imagedst)
 		v5=pfte+imageCols-1;
 		v6=pfte+imageCols;
 		v7=pfte+imageCols+1;
+		//printf("Puntos asignados\n");
 	
-		pdst=imagedst->pixel+imageCols*i+j;
-
+		pdst=(&imagendst)->pixel+imageCols*i+j;
+		//printf("Punto destino asignado\n");
 		if(abs(blackandwhite(*pfte)-blackandwhite(*v0))>DIF ||
 			abs(blackandwhite(*pfte)-blackandwhite(*v1))>DIF ||
 			abs(blackandwhite(*pfte)-blackandwhite(*v2))>DIF ||
@@ -170,7 +176,7 @@ void processBMP(IMAGE *imagefte, IMAGE *imagedst)
 
 int main()
 {
-	int res;
+	int res, i, j;
 	clock_t t_inicial,t_final;
 	char namedest[80];
 
@@ -193,7 +199,31 @@ int main()
 	
 	printf("Procesando imagen de: Renglones = %d, Columnas = %d\n",imagenfte.infoheader.rows,imagenfte.infoheader.cols);
 	
-	processBMP(&imagenfte,&imagendst);
+	//start paralelizar
+	printf("Paralelizando usando %i threads\n", NTHREADS);
+	threadID = (int *) malloc(sizeof(int)*NTHREADS);
+	pthread_t threads[NTHREADS];
+	
+	memcpy(&imagendst, &imagenfte, sizeof(IMAGE)-sizeof(PIXEL *));
+	printf("Imagen fuente copiada a imagen destino\n");
+	int imageRows = (&imagenfte)->infoheader.rows;
+	int imageCols = (&imagenfte)->infoheader.cols;
+	(&imagendst)->pixel=(PIXEL *)malloc(sizeof(PIXEL)*imageRows*imageCols);
+	printf("Memoria para pixeles en imagen destino creada\n");
+
+	for(i=0;i<NTHREADS;i++)
+	{
+		printf("Creando thread %i\n", i);
+		threadID[i] = i;
+		printf("Thread %i creado\n", threadID[i]);
+		pthread_create(&threads[i], NULL, processBMP, (void *)&threadID[i]);
+	}
+
+	for(j=0; j<NTHREADS; j++)
+	{
+		pthread_join(threads[j], NULL);
+	}
+	//end paralelizar
 	
 	res=saveBMP(namedest,&imagendst);
 	if(res==-1)
