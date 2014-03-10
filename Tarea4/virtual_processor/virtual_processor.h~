@@ -1,4 +1,4 @@
-#define MAXPROC 6
+#define MAXPROC 3
 
 #define NINGUNO -1
 

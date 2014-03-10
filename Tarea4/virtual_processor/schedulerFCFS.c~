@@ -1,5 +1,4 @@
 #include "virtual_processor.h"
-#include <stdio.h>
 
 extern struct PROCESO proceso[];
 extern struct COLAPROC listos,bloqueados;
