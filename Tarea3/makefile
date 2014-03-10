@@ -1,10 +1,12 @@
-init: ejemplo
+all: pthread clone
 
-init: ejemplo.c
-	gcc -o ejemplo ejemplo.c
-
+pthread: pthread.c
+	gcc -o thread pthread.c -pthread
+	gcc -o clone clone.c
 
 
 clean:
-	rm ejemplo
+	rm thread
 
+run:
+	sudo ./thread
