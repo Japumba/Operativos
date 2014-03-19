@@ -1,10 +1,11 @@
 #include "virtual_processor.h"
+#include <stdio.h>
 
 extern struct PROCESO proceso[];
 extern struct COLAPROC listos,bloqueados;
 extern int tiempo;
 extern int pars[];
-extern int current_iteration = 1;
+int current_iteration = 1;
 
 int scheduler(int evento)
 {

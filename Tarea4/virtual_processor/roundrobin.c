@@ -1,4 +1,5 @@
 #include "virtual_processor.h"
+#include <stdio.h>
 
 extern struct PROCESO proceso[];
 extern struct COLAPROC listos,bloqueados;
@@ -56,6 +57,7 @@ int scheduler(int evento)
     if(evento==PROCESO_TERMINADO)
     {
         // pars0 = proceso terminado
+	printf("Termina el proceso %d \n",pars[0]);
         proceso[pars[0]].estado=TERMINADO;
 	current_iteration = 1;
         cambia_proceso=1; // Indíca que puede poner un proceso nuevo en ejecucion

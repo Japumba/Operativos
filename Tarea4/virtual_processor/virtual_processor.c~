@@ -169,7 +169,7 @@ void handler(int sen)
     if(sen==SIGALRM)
     {
         tiempo++;
-	printf("\n--------------------------\nInterrupcion del timer proceso%d\nTiempo=%d\n",par[0],tiempo);
+	printf("\n--------------------------\nInterrupcion del timer proceso\nTiempo=%d\n",tiempo);
 
         for(pars[0]=0;pars[0]<MAXPROC;pars[0]++)
             if(proceso[pars[0]].tinicio==tiempo)

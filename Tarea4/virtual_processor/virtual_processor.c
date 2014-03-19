@@ -233,7 +233,7 @@ void handler(int sen)
     ejecuta=scheduler(evento); // Llama al scheduler
     printf("<---PLANIFICADOR--->\n");
     proceso_en_ejecucion = ejecuta; 
-    if(ejecuta!=NINGUNO  && proceso[ejecuta].estado!=BLOQUEADO)
+    if(ejecuta!=NINGUNO  && proceso[ejecuta].estado!=BLOQUEADO && proceso[ejecuta].estado!=TERMINADO)
     {
         printf("Proceso en ejecucion %d\n",ejecuta);
         kill(proceso[ejecuta].pid,SIGCONT);
