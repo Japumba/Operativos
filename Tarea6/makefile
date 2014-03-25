@@ -1,11 +1,11 @@
-all: ejemplo2
+all: semaphores messages
 
-ejemplo1: ejemplo1.c
-	gcc -o e1 ejemplo1.c -pthread
+semaphores: semaphores.c
+	gcc -pthread -o sem semaphores.c
 
-ejemplo2: ejemplo2.c
-	gcc -pthread -o e2 ejemplo2.c
+messages: messages.c
+	gcc -pthread -o msj messages.c
 
 clean:
-	rm e1
-	rm e2
+	rm sem
+	rm msj
