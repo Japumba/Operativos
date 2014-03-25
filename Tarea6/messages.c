@@ -3,17 +3,22 @@
 #include <unistd.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
-#include <semaphore.h>
-#define atomic_xchg(A,B)	__asm__ __volatile__(	\
-				"	lock xchg %1,%0 ;\n"\
-				:	 "=ir" (A)	\
-				:	 "m" (B), "ir" (A)	\
-				);
-#define CICLOS 10
+#include <sys/msg.h>
+#define CICLOS		10
+#define MSG_SIZE	100
 
 char *pais[3]={"Peru","Bolvia","Colombia"};
 
-sem_t *sem;
+typedef struct mymsg
+{
+	long mtype;
+	char mtext[MSG_SIZE];
+} mensaj;
+
+key_t key;
+int msgqid;
+int msgflg;
+mensaj mensaje;
 
 void proceso(int i)
 {
@@ -41,23 +46,25 @@ int main()
 	int args[3];
 	int i;
 	void *thread_result;
-	// Declarar memoria compartida
-	shmid=shmget(0x1234,sizeof(sem),0666|IPC_CREAT);
-	if(shmid==-1)
+	
+	key = 1234;
+	msgflg = IPC_CREAT|0666;
+
+	if((msqid = msgget(key, msgflg)) < 0)
 	{
-		perror("Error en la memoria compartida\n");
+		perror("msgget failed");
 		exit(1);
 	}
 	
-	sem=shmat(shmid,NULL,0);
+	mensaje.mtype = 1;
+	strcpy(mensaje.mtext, "OK");
 
-	if(sem==NULL)
+	if(msgsnd(msqid, &mensaje, 2, IPC_NOWAIT) < 0)
 	{
-		perror("Error en el shmat\n");
-		exit(2);
+		perror("msgsnd failed");
+		exit(1);
 	}
 	
-	sem_init(sem, 1, 1);
 	srand(getpid());
 	for(i=0;i<3;i++)
 	{
@@ -69,6 +76,5 @@ int main()
 	for(i=0;i<3;i++)
 		pid = wait(&status);
 	// Eliminar la memoria compartida
-	shmdt(sem);
 }
 
