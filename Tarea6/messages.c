@@ -4,6 +4,7 @@
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #include <sys/msg.h>
+#include <string.h>
 #define CICLOS		10
 #define MSG_SIZE	100
 
@@ -26,12 +27,12 @@ void proceso(int i)
 	int l;
 	for(k=0;k<CICLOS;k++)
 	{
-		sem_wait(sem);
+		msgrcv(msgqid, &mensaje, 2, 0, 0);
 		printf("Entra %s",pais[i]);
 		fflush(stdout);
 		sleep(rand()%3);
 		printf("- %s Sale\n",pais[i]);
-		sem_post(sem);
+		msgsnd(msgqid, &mensaje, 2, 0);
 		// Espera aleatoria fuera de la sección crítica
 		sleep(rand()%3);
 	}
@@ -50,7 +51,7 @@ int main()
 	key = 1234;
 	msgflg = IPC_CREAT|0666;
 
-	if((msqid = msgget(key, msgflg)) < 0)
+	if((msgqid = msgget(key, msgflg)) < 0)
 	{
 		perror("msgget failed");
 		exit(1);
@@ -59,7 +60,7 @@ int main()
 	mensaje.mtype = 1;
 	strcpy(mensaje.mtext, "OK");
 
-	if(msgsnd(msqid, &mensaje, 2, IPC_NOWAIT) < 0)
+	if(msgsnd(msgqid, &mensaje, 2, IPC_NOWAIT) < 0)
 	{
 		perror("msgsnd failed");
 		exit(1);
