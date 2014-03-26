@@ -1,0 +1,90 @@
+#ifndef Q_SIZE
+#define Q_SIZE 20
+#endif
+
+typedef struct_semaphore
+{
+	int count;
+	int queue[Q_SIZE];
+} mySemaphore;
+
+void waitsem(mySemaphore *sem);
+void signalsem(mySemaphore *sem);
+void pauseprocess(int pid);
+void resumeprocess(int pid);
+int dequeue(mySemaphore *sem);
+void initsem(mySemaphore *sem, int value);
+
+void waitsem(mySemaphore *sem)
+{
+	int l =1;
+	do
+	{
+		atomic_xchg(l,*g);
+	}while(l != 0);
+
+	
+	if(sem->count <=0)
+	{
+		enqueueprocess(sem);
+		sem->count --;
+		*g = 0;
+		pauseproce	ss(getpid());
+	}else
+	{
+		sem->count --;
+		*g =0;
+	}
+}
+
+void signalsem(mySemaphore *sem)
+{
+	int l =1;
+	do
+	{
+		atomic_xchg(l,*g);
+	}while(l != 0);
+
+	if(sem->count <0)
+	{
+		resumeprocess(dequeue(sem));
+	}
+	sem->count ++;
+	*g = 0;
+}
+
+void pauseprocces(int pid)
+{
+	signal(SIGSTOP,pid);
+}
+
+void resumeprocces(int pid)
+{
+	signal(SIGCONT,pid);
+}
+
+int dequeue(mySemaphore *sem)
+{
+	int val;
+	if(sem->count >= 0)
+		return -1;
+
+	val = sem->queue[(-sem->count)-1];
+	
+	for(int i = 0; i < Q_SIZE-1; i++)
+		sem->queue[i] = sem->queue[i+1];
+	sem[Q_SIZE-1] = -1;
+
+	return val;
+}
+
+bool initsem(mySemaphore *sem, int val)
+{
+	if(val < 0)
+		return false;
+	
+	sem->count = val;
+	for(int i = 0; i < Q_SIZE; i++)
+		sem->queue[i] = -1;
+	return true;
+}
