@@ -7,6 +7,7 @@
 #include <string.h>
 #define CICLOS		10
 #define MSG_SIZE	100
+#define BASETIME	0
 
 char *pais[3]={"Peru","Bolvia","Colombia"};
 
@@ -27,14 +28,15 @@ void proceso(int i)
 	int l;
 	for(k=0;k<CICLOS;k++)
 	{
-		msgrcv(msgqid, &mensaje, 2, 0, 0);
+		//printf("%s espera su turno\n", pais[i]);
+		msgrcv(msgqid, &mensaje, MSG_SIZE, 0, 0);
 		printf("Entra %s",pais[i]);
 		fflush(stdout);
-		sleep(rand()%3);
-		printf("- %s Sale\n",pais[i]);
-		msgsnd(msgqid, &mensaje, 2, 0);
+		sleep(rand()%3 + BASETIME);
+		printf(" - %s Sale\n",pais[i]);
+		msgsnd(msgqid, &mensaje, MSG_SIZE, 0);
 		// Espera aleatoria fuera de la sección crítica
-		sleep(rand()%3);
+		sleep(rand()%3 + BASETIME);
 	}
 	exit(0);	// Termina el proceso
 }
@@ -60,7 +62,7 @@ int main()
 	mensaje.mtype = 1;
 	strcpy(mensaje.mtext, "OK");
 
-	if(msgsnd(msgqid, &mensaje, 2, IPC_NOWAIT) < 0)
+	if(msgsnd(msgqid, &mensaje, MSG_SIZE, IPC_NOWAIT) < 0)
 	{
 		perror("msgsnd failed");
 		exit(1);
