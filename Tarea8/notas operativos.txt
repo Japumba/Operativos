@@ -1,0 +1,57 @@
+fd = vdcreat("archivo.txt",o);
+	debe crearse un nodo-i
+	
+vdopen()	
+	
+	
+searchnode(char *filename)
+{
+	Busca en la tabla de nodos i el archivo
+	filename, si no lo encuentra regresa -1
+	
+	Si lo encuentra, regresa el numero de inodo que le
+	corresponde al archivo
+}
+
+removeinode(int numinode)
+{
+	eliminar un inodo, libera el bloque
+}
+
+vdunlink(char*filename)
+{
+	buscar el nodo del archivo
+	searchinode();
+	remover el nodo
+	removeinode();
+}
+
+setninode(int numinode, char *filename, int perms, int usid, int gid,)
+{
+	en la tabla de inodos, crear un inodo en la entrada
+	numinode, con los datos del archivo como filename,
+	permisos, uid, gid
+}
+	inuse	
+0	1		STDIN - Teclado
+1	1		STDOUT - Video
+2	1		STDERR - Video
+
+
+
+			Openfiles
+FD	inuse	Currpos	Currbloqueenmemoria	Buffer[2048]	Bufferindirect
+0	1		
+1	1		
+2	1		
+3
+...
+
+read(fd, buffer, o)
+
+
+lseek(fd, offset(cuánto me voy a mover),where(a partir de donde si es 0 es el inicio, 1 posición actual, 2 a partir del final))
+
+curposptr()
+
+
