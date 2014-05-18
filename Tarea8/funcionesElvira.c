@@ -567,3 +567,39 @@ unsigned int currdatetimetoint()
 	now.sec=tem_ptr->tm_sec;
 	return(datoint(now));
 }
+
+
+//Funcionde de elvira hechas por charly
+
+void vdunlink(char*filename)
+{
+	//buscar el nodo del archivo
+	int numinode = searchinode(filename);
+	//remover el nodo
+	removeinode(numinode);
+}
+
+void removeinode(int numinode)
+{
+	//eliminar un inodo, libera el bloque
+}
+
+int searchnode(char *filename)
+{
+	int i =0;
+	for(i=0;i<sizeof(tablainodo);i++)
+	{
+		bool equal = (std::strcmp(tablainodo[i].name, filename) == 0);
+		if(equal)
+			return i
+	}
+	return (-1);
+	//Busca en la tabla de nodos i el archivo
+	//filename, si no lo encuentra regresa -1
+	
+	//Si lo encuentra, regresa el numero de inodo que le
+	//corresponde al archivo
+}
+
+
+
