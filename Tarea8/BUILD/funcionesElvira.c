@@ -603,3 +603,38 @@ int searchnode(char *filename)
 
 
 
+int vdreadsl(int seclog, char *buffer)
+{
+
+	drive=0;
+	int nsec = ((seclog % SEC_X_TRACK) + 1);
+	int nhead = ((seclog/SEC_X_TRACK) % SUPERFICIES);
+	int ncyl = (seclog/(SEC_X_TRACK * SUPERFICIES));
+
+	printf("Desplegando de disco%d.vd Cil=%d, Sup=%d, Sec=%d\n",drive,ncyl,nhead,nsec);
+	
+	if(vdreadsector(drive, nhead, ncyl, nsec, 1, buffer))
+		return (1);
+	
+	return(-1);
+	
+}
+
+int vdwritesl(int seclog, char *buffer)
+{
+
+	drive=0;
+	int nsec = ((seclog % SEC_X_TRACK) + 1);
+	int nhead = ((seclog/SEC_X_TRACK) % SUPERFICIES);
+	int ncyl = (seclog/(SEC_X_TRACK * SUPERFICIES));
+
+	printf("Desplegando de disco%d.vd Cil=%d, Sup=%d, Sec=%d\n",drive,ncyl,nhead,nsec);
+	
+	if(vdwritesector(drive, nhead, ncyl, nsec, 1, buffer))
+		return (1);
+	
+	return(-1);
+	
+}
+
+
