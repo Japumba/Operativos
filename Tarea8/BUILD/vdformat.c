@@ -63,25 +63,33 @@ int main(int argc, char *argv[])
 	printf("  Writing SECBOOT...\n");
 	
 	char buffer[512]= "";
-	
+	char namefile[11];
+	strcpy(namefile, superbloque.nombre_disco);
+	strcat(namefile, ".vd");
+	printf("Opening %s\n", namefile);
+	int fd = open(namefile, O_WRONLY);
 	memcpy(buffer, &superbloque, sizeof(struct SECBOOT));
 	
-	vdwritesector(0,0,0,(int)superbloque.sec_res,1,buffer);
-	
-	printf("  SECBOOT wrote succesfully\n");
+	if(vdwritesector(0,0,0,1,1,buffer) > 0)
+		printf("  SECBOOT wrote succesfully\n");
+	else
+	{
+		printf("  Could not write SECBOOT. Stop\n");
+		return -1;
+	}
 	printf("  Cleaning inode bitmap...\n");
 	bzero(buffer, 512);
-	vdwritesector(0,0,0,(int)superbloque.sec_res + (int)superbloque.sec_mapa_bits_nodos_i,1,buffer);
+	vdwritesector(0,0,0,1 + (int)superbloque.sec_res + (int)superbloque.sec_mapa_bits_nodos_i,1,buffer);
 	printf("  Inode bitmap clean\n");
 
 	printf("  Cleaning block bitmap...\n");
 	char blockbuffer[2048];
 	bzero(blockbuffer, 2048);
-	vdwritesector(0,0,0,(int)superbloque.sec_res + (int)superbloque.sec_mapa_bits_bloques,4,blockbuffer);
+	vdwritesector(0,0,0,1 + (int)superbloque.sec_res + (int)superbloque.sec_mapa_bits_bloques,4,blockbuffer);
 	printf("  Block bitmap clean\n");
 
 	printf("  Cleaning inode table...\n");
-	vdwritesector(0,0,0,(int)superbloque.sec_res + (int)superbloque.sec_tabla_nodos_i,4,blockbuffer);
+	vdwritesector(0,0,0,1 + (int)superbloque.sec_res + (int)superbloque.sec_tabla_nodos_i,4,blockbuffer);
 	printf("  Inode table clean\n");
 	printf("Format Finished\n");
 	

@@ -18,10 +18,10 @@ int main(int argc,char *argv[])
 	int offset;
 	int i,j,r;
 	unsigned char c;
-
+ 
 	if(argc==2)
 	{	
-		drive=1;
+		drive=0;
 		seclog =atoi(argv[1]);
 		
 		nsec = ((seclog % SEC_X_TRACK) + 1);
