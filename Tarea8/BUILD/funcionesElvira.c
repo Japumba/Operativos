@@ -603,7 +603,7 @@ int searchnode(char *filename)
 
 
 
-int vdreadsl(int seclog, char *buffer)
+int vdreadseclog(int seclog, char *buffer)
 {
 
 	drive=0;
@@ -620,7 +620,7 @@ int vdreadsl(int seclog, char *buffer)
 	
 }
 
-int vdwritesl(int seclog, char *buffer)
+int vdwriteseclog(int seclog, char *buffer)
 {
 
 	drive=0;
